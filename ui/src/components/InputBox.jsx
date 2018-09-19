@@ -1,6 +1,8 @@
 import * as React from "react"
 import { FlexItem } from "react-super-styled"
 
+import { parse_query as parseQuery } from "wasmy_flux"
+
 class InputBox extends React.Component {
   constructor(props) {
     super(props)
@@ -18,14 +20,13 @@ class InputBox extends React.Component {
   parse = e => {
     e.preventDefault()
 
-    const success = true
+    const { scriptInput } = this.state
 
-    if (success) {
-      this.props.onResults(["data 1", "data 2", "data 3"])
-      return
+    const err = parseQuery(scriptInput)
+
+    if (err) {
+      this.props.onError({ message: err })
     }
-
-    this.props.onError({ message: "Error! " })
   }
 
   render() {
