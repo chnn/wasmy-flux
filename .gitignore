@@ -1,6 +1,7 @@
 node_modules
+ui/build
+.DS_Store
 .cache
-dist
 
 wasm/target/
 wasm/pkg/
