@@ -1,0 +1,320 @@
+Start
+  = { soi ~ Program ~ eoi }
+
+Program
+  = { SourceElements }
+
+SourceElements
+  = { SourceElement ~ (SourceElement)* }
+
+SourceElement
+  = { Statement }
+
+Statement
+  = { VariableStatement
+  | OptionStatement
+  | ReturnStatement
+  | ExpressionStatement
+  | BlockStatement }
+
+OptionStatement
+  = { "option" ~ Identifier ~ "=" ~ Expr }
+
+VariableStatement
+  = { VariableDeclaration }
+
+ReturnStatement
+  = { "return" ~ Expr }
+
+ExpressionStatement
+  = { Expr }
+
+BlockStatement
+  = { "{" ~ ( Statement )* ~ "}" }
+
+VariableDeclaration
+  = { Identifier ~ "=" ~ Expr }
+
+MemberExpressions
+  = { Identifier ~ (MemberExpressionProperty)* }
+
+MemberExpressionProperty
+  = { "." ~ Identifier
+    | "[" ~ Primary ~ "]" }
+
+CallExpression
+  = { (MemberExpressions ~ Arguments) ~ (Arguments | MemberExpressionProperty)* }
+
+PipeExpression
+  = { PipeExpressionHead ~ PipeExpressionPipe+ }
+
+PipeExpressionHead
+  = { CallExpression
+  | Literal
+  | Array
+  | MemberExpressions
+  | Identifier
+  | ObjectExpression
+  | ArrowFunctionExpression
+  | Parens }
+
+PipeExpressionPipe
+  = { "|>" ~ CallExpression }
+
+Arguments
+  = { "(" ~ (ObjectProperties)? ~ ")" }
+
+ArrowFunctionExpression
+  = { "(" ~ ArrowFunctionParams? ~ ")" ~ "=>" ~ ArrowFunctionBody }
+
+ArrowFunctionParams
+  = { ArrowFunctionParam ~ ArrowFunctionParamsRest* ~ ","? }
+
+ArrowFunctionParamsRest
+  = { ","  ~ ArrowFunctionParam }
+
+ArrowFunctionParam
+  = { Identifier ~ "=" ~ Primary
+  | Identifier }
+
+ArrowFunctionBody
+  = { Expr
+  | BlockStatement }
+
+ObjectExpression
+  = { "{" ~ (ObjectProperties)? ~ "}" }
+
+ObjectProperties
+  = { Property ~ PropertiesRest* ~ ","? }
+
+PropertiesRest
+  = { "," ~ Property }
+
+Property
+  = { Identifier ~ ":" ~ Expr }
+
+Expr
+  = { LogicalExpression }
+
+LogicalOperators
+  = { (^"or" | ^"and") }
+
+LogicalExpression
+  = { Equality ~ (  LogicalOperators ~ Equality )* }
+
+EqualityOperators
+  = { ("==" | "!=" | "=~" | "!~") }
+
+Equality
+  = { Relational ~ ( EqualityOperators ~ Relational )* }
+
+RelationalOperators
+  = { "<="
+      | "<"
+      | ">="
+      | ">"
+      | "startswith"
+      | ^"in"
+      | ^"not empty"
+      | ^"empty"
+    }
+
+Relational
+  = { Additive ~ ( RelationalOperators ~ Additive )* }
+
+AdditiveOperator
+  = { "+" | "-" }
+
+Additive
+  = { Multiplicative ~ ( AdditiveOperator ~ Multiplicative )* }
+
+MultiplicativeOperator
+  = { "*" | "/" }
+
+Multiplicative
+  = { UnaryExpression ~ ( MultiplicativeOperator ~ UnaryExpression )* }
+
+UnaryOperator
+  = { "-" | "not" }
+
+UnaryExpression
+  = { UnaryOperator ~ Primary
+  | Primary }
+
+Primary
+  = _{ PipeExpression
+  | Array
+  | Literal
+  | CallExpression
+  | MemberExpressions
+  | Identifier
+  | ObjectExpression
+  | ArrowFunctionExpression
+  | Parens }
+
+Literal
+  = _{ StringLiteral
+  | BooleanLiteral
+  | RegexpLiteral
+  | PipeLiteral
+  | DurationLiteral
+  | DateTimeLiteral
+  | NumberLiteral
+  | IntegerLiteral }
+
+Parens
+  = _{ "(" ~ Expr ~ ")" }
+
+Array
+  = { "[" ~ ArrayElements? ~ "]" }
+
+ArrayElements
+  = { Primary ~ ArrayRest* }
+
+ArrayRest
+  = _{ "," ~ Primary }
+
+DateFullYear
+  = _{ Digit ~ Digit ~ Digit ~ Digit }
+
+DateMonth
+  = _{ Digit ~ Digit }
+
+DateMDay
+  = _{ Digit ~ Digit }
+
+TimeHour
+  = _{ Digit ~ Digit }
+
+TimeMinute
+  = _{ Digit ~ Digit }
+
+TimeSecond
+  = _{ Digit ~ Digit }
+
+TimeSecFrac
+  = _{ "." ~ Digit+ }
+
+TimeNumOffset
+  = _{ ("+" | "-") ~ TimeHour ~ ":" ~ TimeMinute }
+
+TimeOffset
+  = _{ "Z" | TimeNumOffset }
+
+PartialTime
+  = _{ TimeHour ~ ":" ~ TimeMinute ~ ":" ~ TimeSecond ~ TimeSecFrac? }
+
+FullDate
+  = _{ DateFullYear ~ "-" ~ DateMonth ~ "-" ~ DateMDay }
+
+FullTime
+  = _{ PartialTime ~ TimeOffset }
+
+DateTimeLiteral
+  = { FullDate ~ "T" ~ FullTime }
+
+NanoSecondUnits
+  = { "ns" }
+
+MicroSecondUnits
+  = { "us" | "µs" | "μs" }
+
+MilliSecondUnits
+  = { "ms" }
+
+SecondUnits
+  = { "s" }
+
+MinuteUnits
+  = _{ "m" }
+
+HourUnits
+  = { "h" }
+
+DayUnits
+  = { "d" }
+
+WeekUnits
+  = { "w" }
+
+DurationUnits
+  = _{
+        NanoSecondUnits
+      | MicroSecondUnits
+      | MilliSecondUnits
+      | SecondUnits
+      | MinuteUnits
+      | HourUnits
+      | DayUnits
+      | WeekUnits
+     }
+
+SingleDuration
+  = _{ Integer ~ DurationUnits }
+
+DurationLiteral
+  = { SingleDuration+ }
+
+StringLiteral
+  = { ( "\"" ~ DoubleStringChar* ~ "\"" )
+  | ( "\"" ~ DoubleStringChar* ~ ( EOL | eoi ) ) }
+
+DoubleStringChar
+  = _{ !( "\"" | "\\" | EOL ) ~ SourceChar
+  | "\\" ~ DoubleStringEscape }
+
+DoubleStringEscape
+  = _{ "\""
+  | ( SourceChar | EOL | eoi ) }
+
+RegexpLiteral
+  = { "/" ~ RegexpBody ~ "/" }
+
+RegexpBody
+  = _{ RegexpChar+ }
+
+RegexpChar
+  = _{ !("\\" ~ "/") ~ RegexpNonTerminator
+  | RegexpBackslashSequence }
+
+RegexpBackslashSequence
+  = { "\\/"
+  | "\\" ~ RegexpNonTerminator }
+
+RegexpNonTerminator
+  = _{ !newline ~ SourceChar }
+
+BooleanLiteral
+  = { "true"
+  | "false" }
+
+NumberLiteral
+  = { Integer ~ "." ~ Digit+ }
+
+Integer
+  = _{ ("0" | NonZeroDigit ~ Digit*) }
+
+IntegerLiteral
+  = { Integer }
+
+NonZeroDigit
+  = _{ '1'..'9' }
+
+Digit
+  = _{ '0'..'9' }
+
+PipeLiteral
+  = { "<-" }
+
+Identifier
+  = { ('a'..'z' | 'A'..'Z' | "_") ~ ("_" | '0'..'9' | 'a'..'z' | 'A'..'Z')* }
+
+SourceChar
+  = { any }
+
+newline    = _{ "\n" | "\r\n" }
+whitespace = _{ " " | "\t" | newline }
+comment = _{ "//" ~ (!newline ~ any)* }
+
+EOL
+  = _{ "\n" }

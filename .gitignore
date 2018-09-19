@@ -1,3 +1,8 @@
 node_modules
 .cache
 dist
+
+wasm/target/
+wasm/pkg/
+wasm/Cargo.lock
+wasm/**/*.rs.bk

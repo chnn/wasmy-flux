@@ -1,0 +1,12 @@
+[package]
+name = "wasmy_flux"
+version = "0.1.0"
+authors = ["Alirie Gray <alirie.gray@gmail.com>", "Chris Goller <goller@gmail.com>", "Chris Henn <chris@chrishenn.net>"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+pest = "^1.0"
+pest_derive = "^1.0"
+wasm-bindgen = "0.2.21"
