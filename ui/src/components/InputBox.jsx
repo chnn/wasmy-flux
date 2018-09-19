@@ -1,5 +1,4 @@
 import * as React from "react"
-import { FlexItem } from "react-super-styled"
 
 import { parse_query as parseQuery } from "wasmy_flux"
 
@@ -21,41 +20,25 @@ class InputBox extends React.Component {
     e.preventDefault()
 
     const { scriptInput } = this.state
+    let err = parseQuery(scriptInput)
 
-    const err = parseQuery(scriptInput)
-
-    if (err) {
-      this.props.onError({ message: err })
+    if (err === "") {
+      err = "No syntax errors—nice job!"
     }
+
+    this.props.onError({ message: err })
   }
 
   render() {
     return (
-      <FlexItem>
-        <form
-          onSubmit={this.parse}
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-end"
-          }}
-        >
-          <textarea
-            style={{
-              border: "none",
-              boxShadow: "none",
-              height: 200,
-              outline: "none",
-              overflow: "auto",
-              resize: "none",
-              width: 500
-            }}
-            value={this.state.scriptInput}
-            onChange={this.updateScript}
-          />
-          <input type="submit" value={"Parse!"} />
-        </form>
-      </FlexItem>
+      <form onSubmit={this.parse}>
+        <textarea
+          value={this.state.scriptInput}
+          rows={10}
+          onChange={this.updateScript}
+        />
+        <input type="submit" value={"Parse!"} />
+      </form>
     )
   }
 }
