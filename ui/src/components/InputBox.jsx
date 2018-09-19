@@ -37,7 +37,7 @@ class InputBox extends React.Component {
           rows={10}
           onChange={this.updateScript}
         />
-        <input type="submit" value={"Parse!"} />
+        <button type="submit">Parse!</button>
       </form>
     )
   }

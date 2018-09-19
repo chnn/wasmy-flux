@@ -15,11 +15,11 @@ class App extends React.Component {
 
   render() {
     return (
-      <>
+      <div className="app">
         <InputBox onError={this.handleError} onResults={this.handleResults} />
         <Error message={this.state.errorMessage} />
         <DataDisplay data={this.state.data} />
-      </>
+      </div>
     )
   }
 
