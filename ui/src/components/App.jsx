@@ -1,7 +1,7 @@
 import * as React from "react"
 import InputBox from "./InputBox.jsx"
 import Error from "./Error.jsx"
-import DataDisplay from "./DataDisplay.jsx"
+import ASTViz from "./ASTViz.jsx"
 
 class App extends React.Component {
   constructor(props) {
@@ -16,9 +16,13 @@ class App extends React.Component {
   render() {
     return (
       <div className="app">
-        <InputBox onError={this.handleError} onResults={this.handleResults} />
+        <InputBox
+          onError={this.handleError}
+          onResults={this.handleResults}
+          onAST={this.handleAST}
+        />
         <Error message={this.state.errorMessage} />
-        <DataDisplay data={this.state.data} />
+        <ASTViz key={Date.now()} ast={this.state.ast} />
       </div>
     )
   }
@@ -29,6 +33,10 @@ class App extends React.Component {
 
   handleResults = results => {
     this.setState({ data: results })
+  }
+
+  handleAST = ast => {
+    this.setState({ ast })
   }
 }
 

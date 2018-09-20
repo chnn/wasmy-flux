@@ -20,7 +20,9 @@ html, body, #root {
 .app {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  width: 100%;
+  margin: 100px;
 }
 
 form {
@@ -44,9 +46,39 @@ form button:hover {
   cursor: pointer;
 }
 
+
 pre {
   margin-top: 40px;
-  min-height: 300px;
+  width: 600px;
+  min-height: 130px;
   max-width: 600px;
   overflow: scroll;
+}
+
+.ast-viz {
+  overflow: scroll;
+  width: 95%;
+}
+
+.node circle {
+  fill: #999;
+}
+
+.node text {
+  font: 16px sans-serif;
+}
+
+.node--internal circle {
+  fill: #555;
+}
+
+.node--internal text {
+  text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
+}
+
+.link {
+  fill: none;
+  stroke: #555;
+  stroke-opacity: 0.4;
+  stroke-width: 1.5px;
 }

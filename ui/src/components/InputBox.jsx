@@ -1,6 +1,9 @@
 import * as React from "react"
 
-import { parse_query as parseQuery } from "wasmy_flux"
+import {
+  get_syntax_error as getSyntaxError,
+  get_tree as getTree
+} from "wasmy_flux"
 
 class InputBox extends React.Component {
   constructor(props) {
@@ -20,13 +23,15 @@ class InputBox extends React.Component {
     e.preventDefault()
 
     const { scriptInput } = this.state
-    let err = parseQuery(scriptInput)
+    let err = getSyntaxError(scriptInput)
+    let ast = JSON.parse(getTree(scriptInput))
 
     if (err === "") {
       err = "No syntax errors—nice job!"
     }
 
     this.props.onError({ message: err })
+    this.props.onAST(ast)
   }
 
   render() {
@@ -34,7 +39,7 @@ class InputBox extends React.Component {
       <form onSubmit={this.parse}>
         <textarea
           value={this.state.scriptInput}
-          rows={10}
+          rows={4}
           onChange={this.updateScript}
         />
         <button type="submit">Parse!</button>
